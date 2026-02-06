@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio de Livros - Alinhamento & Start</title>
+    <style>
+        /* ================= ESTILO (CSS) - TEMA BANNER ================= */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
+
+        :root {
+            --cor-fundo-banner: #F3F0E1; /* Bege claro do fundo */
+            --cor-bege-claro: #FAF8F0; /* Bege mais claro para container */
+            --cor-verde-banner: #6B7A53; /* Verde oliva dos círculos/texto */
+            --cor-laranja-banner: #B87333; /* Marrom alaranjado do título */
+            --cor-texto-principal: #4A4A4A;
+            --cor-branco: #ffffff;
+            --sombra-suave: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, #F8F6E9, var(--cor-fundo-banner));
+            color: var(--cor-texto-principal);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            /* Adiciona os elementos gráficos do banner como fundo */
+            background-image: 
+                url('data:image/svg+xml;utf8,<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><circle cx="50%" cy="50%" r="40%" stroke="%236B7A53" stroke-width="2" fill="none" opacity="0.4"/><circle cx="50%" cy="10%" r="40%" stroke="%236B7A53" stroke-width="2" fill="none" opacity="0.4"/><circle cx="50%" cy="90%" r="40%" stroke="%236B7A53" stroke-width="2" fill="none" opacity="0.4"/><path d="M50% 20% L45% 15% M50% 20% L55% 15%" stroke="%23E0D8C0" stroke-width="4" fill="none"/><path d="M50% 25% L45% 20% M50% 25% L55% 20%" stroke="%23E0D8C0" stroke-width="4" fill="none"/><path d="M50% 30% L45% 25% M50% 30% L55% 25%" stroke="%23E0D8C0" stroke-width="4" fill="none"/><path d="M50% 80% L45% 85% M50% 80% L55% 85%" stroke="%23E0D8C0" stroke-width="4" fill="none"/><path d="M50% 75% L45% 80% M50% 75% L55% 80%" stroke="%23E0D8C0" stroke-width="4" fill="none"/><path d="M50% 70% L45% 75% M50% 70% L55% 75%" stroke="%23E0D8C0" stroke-width="4" fill="none"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Container Principal */
+        .container {
+            text-align: center;
+            width: 85%;
+            max-width: 800px;
+            background: rgba(250, 248, 240, 0.95); /* Fundo bege mais quente */
+            padding: 50px 40px;
+            border-radius: 30px;
+            border: 3px solid var(--cor-verde-banner);
+            box-shadow: 0 15px 35px var(--sombra-suave);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cabeçalho e Títulos inspirados no banner */
+        .cabecalho-evento {
+            color: var(--cor-verde-banner);
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .estrela-icone {
+            color: #E0D8C0; /* Cor da estrela do banner */
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            color: var(--cor-laranja-banner);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            color: var(--cor-laranja-banner);
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        p.subtitulo {
+            color: var(--cor-verde-banner);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        /* Área do Nome Sorteado (Visor) */
+        .visor {
+            background-color: #FDFBF5; /* Bege muito claro */
+            border: 4px solid var(--cor-verde-banner);
+            border-radius: 20px;
+            padding: 40px 20px;
+            margin: 30px auto;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            width: 90%;
+        }
+
+        .nome-destaque {
+            font-size: 3.8rem;
+            font-weight: 800;
+            color: #aaa; /* Começa cinza */
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        .id-destaque {
+            font-size: 1.6rem;
+            color: var(--cor-verde-banner);
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Efeito quando ganha */
+        .vencedor .nome-destaque {
+            color: var(--cor-laranja-banner);
+            animation: zoomEntrada 0.8s ease-out;
+        }
+        
+        .vencedor {
+            border-color: var(--cor-laranja-banner);
+            box-shadow: 0 0 40px rgba(184, 115, 51, 0.5);
+        }
+
+        /* Botões e Controles */
+        .controles {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-carregar {
+            background-color: var(--cor-verde-banner);
+            color: white;
+        }
+
+        .btn-sortear {
+            background-color: var(--cor-laranja-banner);
+            color: white;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        #contador {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: var(--cor-verde-banner);
+            font-weight: 600;
+        }
+
+        /* Ícone do Peixe (Rodapé) */
+        .footer-icon {
+            margin-top: 20px;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+        
+        .footer-icon img {
+            width: 70px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Animações */
+        @keyframes zoomEntrada {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Canvas para Confetes */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container">
+        <div class="cabecalho-evento">
+            7 DE FEV <span class="estrela-icone">✶</span> SÁB
+        </div>
+        <h1>TREINAMENTO PARA </h1>
+        <h2>LíDERES</h2>
+        <p class="subtitulo">Sorteio de Livros para Líderes e Colíderes de Pequenos Núcleos </p>
+
+        <div class="visor" id="visor">
+            <div class="nome-destaque" id="display-nome">Aguardando Lista...</div>
+            <div class="id-destaque" id="display-id">---</div>
+        </div>
+
+        <div id="contador">Nenhuma lista carregada</div>
+
+        <div class="controles">
+            <label for="input-csv" class="btn btn-carregar">
+                📂 Carregar Lista CSV
+            </label>
+            <input type="file" id="input-csv" accept=".csv">
+
+            <button class="btn btn-sortear" id="btn-sortear" onclick="iniciarSorteio()" disabled>
+                🎲 SORTEAR!
+            </button>
+        </div>
+
+        <div class="footer-icon">
+            <img src="fish-icon.png" alt="Peixe" style="width: 80px; height: auto;">
+        </div>
+    </div>
+
+    <script>
+        /* ================= LÓGICA (JavaScript) ================= */
+        
+        let participantes = [];
+        let sorteando = false;
+
+        // --- 1. Lógica de Leitura do Arquivo ---
+        document.getElementById('input-csv').addEventListener('change', function(e) {
+            const arquivo = e.target.files[0];
+            if (!arquivo) return;
+
+            const leitor = new FileReader();
+            
+            leitor.onload = function(evento) {
+                const texto = evento.target.result;
+                processarCSV(texto);
+            };
+
+            // Lê como UTF-8 para garantir acentos corretos
+            leitor.readAsText(arquivo, 'UTF-8');
+        });
+
+        function processarCSV(texto) {
+            const linhas = texto.split('\n');
+            participantes = [];
+            
+            // Tenta identificar o separador (vírgula ou ponto e vírgula)
+            const primeiraLinha = linhas[0];
+            const separador = primeiraLinha.includes(';') ? ';' : ',';
+
+            // Pega o cabeçalho
+            const cabecalho = linhas[0].toLowerCase().split(separador).map(c => c.trim().replace(/"/g, ''));
+            
+            // Procura índices das colunas
+            const idxNome = cabecalho.findIndex(c => c === 'nome');
+            const idxId = cabecalho.findIndex(c => c === 'id');
+
+            if (idxNome === -1) {
+                alert("ERRO: Não encontrei a coluna 'Nome' no arquivo CSV.\nVerifique se o cabeçalho está correto.");
+                return;
+            }
+
+            // Loop para preencher a lista
+            for (let i = 1; i < linhas.length; i++) {
+                const linhaLimpa = linhas[i].trim();
+                if (linhaLimpa) {
+                    const colunas = linhaLimpa.split(separador);
+                    
+                    const nome = colunas[idxNome] ? colunas[idxNome].trim().replace(/"/g, '') : "Sem Nome";
+                    const id = (idxId !== -1 && colunas[idxId]) ? colunas[idxId].trim().replace(/"/g, '') : "";
+
+                    if(nome) {
+                        participantes.push({ nome, id });
+                    }
+                }
+            }
+
+            // Atualiza Interface
+            if (participantes.length > 0) {
+                document.getElementById('contador').innerText = `${participantes.length} participantes prontos.`;
+                document.getElementById('display-nome').innerText = "Lista Carregada!";
+                document.getElementById('display-nome').style.color = "var(--cor-verde-banner)";
+                document.getElementById('btn-sortear').disabled = false;
+                
+                limparVencedorVisual();
+            } else {
+                alert("O arquivo parece vazio ou inválido.");
+            }
+        }
+
+        // --- 2. Lógica do Sorteio (Animação) ---
+        function iniciarSorteio() {
+            if (participantes.length === 0 || sorteando) return;
+
+            sorteando = true;
+            document.getElementById('btn-sortear').disabled = true;
+            document.querySelector('.btn-carregar').style.pointerEvents = "none";
+            document.querySelector('.btn-carregar').style.opacity = "0.6";
+            
+            limparVencedorVisual();
+
+            let giros = 0;
+            const maxGiros = 40; // Mais giros para mais suspense
+            let velocidade = 40; // Mais rápido no início
+
+            function rodar() {
+                const temp = participantes[Math.floor(Math.random() * participantes.length)];
+                
+                document.getElementById('display-nome').innerText = temp.nome;
+                document.getElementById('display-id').innerText = "";
+
+                giros++;
+
+                if (giros < maxGiros) {
+                    // Desaceleração progressiva
+                    if (giros > maxGiros - 15) velocidade += 25;
+                    if (giros > maxGiros - 5) velocidade += 50;
+                    setTimeout(rodar, velocidade);
+                } else {
+                    finalizar();
+                }
+            }
+            rodar();
+        }
+
+        function finalizar() {
+            const indiceGanhador = Math.floor(Math.random() * participantes.length);
+            const ganhador = participantes[indiceGanhador];
+
+            const elNome = document.getElementById('display-nome');
+            const elId = document.getElementById('display-id');
+            const elVisor = document.getElementById('visor');
+
+            elNome.innerText = ganhador.nome;
+            elId.innerText = ganhador.id ? `ID: ${ganhador.id}` : "";
+
+            elVisor.classList.add('vencedor');
+            
+            // Remove ganhador da lista
+            participantes.splice(indiceGanhador, 1);
+            document.getElementById('contador').innerText = `${participantes.length} participantes restantes.`;
+
+            dispararConfetes();
+
+            sorteando = false;
+            document.getElementById('btn-sortear').disabled = false;
+            document.querySelector('.btn-carregar').style.pointerEvents = "auto";
+            document.querySelector('.btn-carregar').style.opacity = "1";
+        }
+
+        function limparVencedorVisual() {
+            document.getElementById('visor').classList.remove('vencedor');
+            document.getElementById('display-id').innerText = "---";
+             if (participantes.length > 0 && !sorteando) {
+                document.getElementById('display-nome').style.color = "var(--cor-verde-banner)";
+            }
+        }
+
+        // --- 3. Efeito de Confetes (Cores do Tema) ---
+        function dispararConfetes() {
+            const canvas = document.getElementById("confetti-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const confetes = [];
+            const cores = ['#B87333', '#6B7A53', '#E0D8C0', '#F3F0E1', '#FFFFFF'];
+
+            for (let i = 0; i < 200; i++) {
+                confetes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    cor: cores[Math.floor(Math.random() * cores.length)],
+                    tamanho: Math.random() * 12 + 6,
+                    velocidade: Math.random() * 4 + 3,
+                    oscilacao: Math.random() * 3
+                });
+            }
+
+            let animacaoId;
+            function desenhar() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let ativos = 0;
+
+                confetes.forEach(c => {
+                    c.y += c.velocidade;
+                    c.x += Math.sin(c.y * 0.05) * c.oscilacao;
+
+                    if (c.y < canvas.height) {
+                        ctx.fillStyle = c.cor;
+                        ctx.fillRect(c.x, c.y, c.tamanho, c.tamanho);
+                        ativos++;
+                    }
+                });
+
+                if (ativos > 0) {
+                    animacaoId = requestAnimationFrame(desenhar);
+                } else {
+                    cancelAnimationFrame(animacaoId);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa tela no final
+                }
+            }
+            desenhar();
+        }
+
+        window.addEventListener('resize', () => {
+            const c = document.getElementById("confetti-canvas");
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+</html>
